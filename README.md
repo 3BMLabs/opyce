@@ -13,6 +13,8 @@ python should be available in office, in its fullest form:
 - call python functions from VBA and f.e. excel values
 ## libreoffice
 
+# script marketplace
+we'll have a marketplace containing opyce scripts, to get started easily.
 
 # concrete
 - when clicking on the python button on office, a new window, containing a python interpreter, will pop up. the files it contains will be in the temp folder.
