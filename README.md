@@ -20,6 +20,3 @@ we'll have a marketplace containing opyce scripts, to get started easily.
 - when clicking on the python button on office, a new window, containing a python interpreter, will pop up. the files it contains will be in the temp folder.
 - when saving the excel document, the python files will be saved inside of the document.
 - the window could be a VSCode window. the python interpreter will be downloaded as recommended extension.
-
-- todo:
--   download vs code and open a window from excel
