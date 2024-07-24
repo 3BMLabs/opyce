@@ -12,3 +12,12 @@ python should be available in office, in its fullest form:
 - call VBA functions from python and access VBA fields
 - call python functions from VBA and f.e. excel values
 ## libreoffice
+
+
+# concrete
+- when clicking on the python button on office, a new window, containing a python interpreter, will pop up. the files it contains will be in the temp folder.
+- when saving the excel document, the python files will be saved inside of the document.
+- the window could be a VSCode window. the python interpreter will be downloaded as recommended extension.
+
+- todo:
+-   download vs code and open a window from excel
