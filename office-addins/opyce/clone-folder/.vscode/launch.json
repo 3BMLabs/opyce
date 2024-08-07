@@ -1,0 +1,32 @@
+﻿{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    //{
+    //    "name": "Python Debugger: Current File with Arguments",
+    //    "type": "debugpy",
+    //    "request": "launch",
+    //    "program": "${file}",
+    //    "console": "integratedTerminal",
+    //    "args": "-m module1.main"
+    //},
+    //{
+    //    "name": "Python Debugger: Module",
+    //    "type": "debugpy",
+    //    "request": "launch",
+    //    "module": "module1.main""preLaunchTask": ""
+    //},
+    {
+      "name": "Run module1/main.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/module1/main.py",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}

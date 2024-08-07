@@ -1,3 +1,9 @@
+bin
+.vs
+obj
+*.pfx
+packages
+
 # Prerequisites
 *.d
 
