@@ -1,7 +1,14 @@
-﻿namespace opyce
+﻿using Microsoft.Office.Core;
+
+namespace opyce
 {
     public partial class Opyce
     {
+
+        protected override IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            return null;
+        }
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
         }
@@ -21,7 +28,7 @@
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
-        
+
         #endregion
     }
 }

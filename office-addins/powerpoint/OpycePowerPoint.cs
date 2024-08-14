@@ -30,11 +30,11 @@ namespace powerpoint
         }
         void OnOpen(PowerPoint.Presentation pp)
         {
-            MainRibbon.Serialize(pp, false);
+            ribbon.Serialize(pp, false);
         }
         void OnSave(PowerPoint.Presentation pp, ref bool Cancel)
         {
-            MainRibbon.Serialize(pp, true);
+            ribbon.Serialize(pp, true);
         }
         #region VSTO generated code
 

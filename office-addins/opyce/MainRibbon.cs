@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Tools.Ribbon;
+﻿using Microsoft.Office.Core;
+using Microsoft.Office.Tools.Ribbon;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -15,12 +16,13 @@ namespace opyce
         public static string opyceTempFolder = Path.Combine(tempPath, "opyce");
         public static string opyceIniFile = Path.Combine(tempPath, "opyce.ini");
         static FileSystemWatcher watcher = new FileSystemWatcher();
+        dynamic document;
         private void MainRibbon_Load(object sender, RibbonUIEventArgs e)
         {
 
         }
 
-        private void MainRibbon_Close(object sender, EventArgs e)
+        void deleteOpyceFolder()
         {
             if (Directory.Exists(opyceTempFolder))
             {
@@ -44,6 +46,13 @@ namespace opyce
             }
         }
 
+        private void MainRibbon_Close(object sender, EventArgs e)
+        {
+            //stop watching files
+            watcher = new FileSystemWatcher();
+            deleteOpyceFolder();
+        }
+
         public delegate string replaceFunction(string original);
         public static void SetPlaceHolders(string placeHolders)
         {
@@ -52,21 +61,21 @@ namespace opyce
             File.WriteAllText(opyceIniPath, placeHolders);
         }
 
-        public static void Serialize(dynamic document, bool write)
+        public void Serialize(dynamic document, bool write)
         {
+            this.document = document;
             bool tempFolderExists = Directory.Exists(opyceTempFolder);
+            DocumentProperties props = document.CustomDocumentProperties;
             if (write)
             {
                 if (tempFolderExists)
                 {
                     //delete all previous xml parts
-
-
-                    foreach (Office.CustomXMLPart xmlPart in document.CustomXMLParts)
+                    foreach (DocumentProperty prop in props)
                     {
-                        if (xmlPart.NamespaceURI == Serializer.OpyceNameSpace)
+                        if (prop.Name.StartsWith("opyce"))
                         {
-                            xmlPart.Delete();
+                            prop.Delete();
                         }
                     }
 
@@ -74,17 +83,46 @@ namespace opyce
 
                     //loop over folders
                     string[] paths = Directory.GetFiles(opyceTempFolder, "*", SearchOption.AllDirectories);
+                    int fileNumber = 0;
                     foreach (string path in paths)
                     {
                         string relativePath = path.Substring(opyceTempFolder.Length + 1);
-                        var customData = new CustomXML { Key = relativePath, Value = File.ReadAllText(path) };
-                        Serializer.AddCustomXmlPart(document, customData, Serializer.OpyceNameSpace);
+                        props.Add("opyce file " + (fileNumber++), false, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, relativePath + "\n" + File.ReadAllText(path));
                     }
                 }
             }
             //we can't just overwrite the temp folder, because we'd merge random projects
-            else if (!tempFolderExists)
+            else
             {
+                if (tempFolderExists)
+                {
+                    if(MessageBox.Show("opyce exists already in " + opyceTempFolder + ". Can we delete it?", "Opyce", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                    {
+                        deleteOpyceFolder();
+                    }
+                    else return;
+                }
+                Directory.CreateDirectory(opyceTempFolder);
+                watcher = new FileSystemWatcher(opyceTempFolder, "*")
+                {
+                    EnableRaisingEvents = true,
+                    IncludeSubdirectories = true
+                };
+                watcher.Created += OnFileUpdate;
+                watcher.Changed += OnFileUpdate;
+                foreach(DocumentProperty prop in props)
+                {
+                    if (prop.Name.StartsWith("opyce"))
+                    {
+                        int separatorIndex = prop.Value.IndexOf('\n');
+                        
+                        string value = prop.Value as string;
+
+                        string absolutePath = Path.Combine(opyceTempFolder, value.Substring(0, separatorIndex));
+                        Directory.CreateDirectory(Path.GetDirectoryName(absolutePath));
+                        File.WriteAllText(absolutePath, value.Substring(separatorIndex + 1));
+                    }
+                }
                 CustomXML[] customData = Serializer.GetCustomXmlParts<CustomXML>(document, Serializer.OpyceNameSpace);
                 foreach (CustomXML data in customData)
                 {
@@ -93,6 +131,11 @@ namespace opyce
                     File.WriteAllText(absolutePath, data.Value);
                 }
             }
+        }
+
+        private void OnFileUpdate(object sender, FileSystemEventArgs e)
+        {
+            document.Saved = false;
         }
 
         public void InstallVSCode()
