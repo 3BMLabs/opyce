@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using Office = Microsoft.Office.Core;
 
@@ -31,16 +33,17 @@ namespace opyce
             documentOrWorkbook.CustomXMLParts.Add(xmlContent);
         }
 
-        public static T GetCustomXmlPart<T>(dynamic documentOrWorkbook, string namespaceUri)
+        public static T[] GetCustomXmlParts<T>(dynamic documentOrWorkbook, string namespaceUri)
         {
+            List<T> arr = new List<T>();
             foreach (Office.CustomXMLPart xmlPart in documentOrWorkbook.CustomXMLParts)
             {
                 if (xmlPart.NamespaceURI == namespaceUri)
                 {
-                    return DeserializeFromXml<T>(xmlPart.XML);
+                    arr.Add(DeserializeFromXml<T>(xmlPart.XML));
                 }
             }
-            return default;
+            return arr.ToArray();
         }
     }
 }

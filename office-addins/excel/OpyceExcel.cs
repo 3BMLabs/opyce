@@ -14,21 +14,23 @@ namespace excel
             ribbon = new opyce.MainRibbon();
             return ribbon.GetExtensibility();
         }
-        void Application_WorkbookOpen(Excel.Workbook wb)
+        void onOpen(Excel.Workbook wb)
         {
-            var customData = Serializer.GetCustomXmlPart<CustomXML>(wb, Serializer.OpyceNameSpace);
-            if (customData != null)
-            {
-                customData.Value = "blah";
-            }
+            MainRibbon.Serialize(wb, false);
             opyce.MainRibbon.SetPlaceHolders($"appname=Excel\ninitialization=self.workbook = self.app.Workbooks(\"{this.Application.ActiveWorkbook.Name}\")");
         }
-        void Application_WorkbookBeforeSave(Excel.Workbook wb, bool SaveAsUI, ref bool Cancel)
+        void OnSave(Excel.Workbook wb, bool SaveAsUI, ref bool Cancel)
         {
-            //if(File.Exists(MainRibbon.))
-            //string mainFile = 
-            //var customData = new CustomXML { Key = "mainFile", Value = "exampleValue" };
-            //Serializer.AddCustomXmlPart(wb, customData, Serializer.OpyceNameSpace);
+            //DocumentProperties props = wb.CustomDocumentProperties;
+            //props.Add("blah:/blah", false, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, "befre;pfewpf[l3245re");
+            //foreach(DocumentProperty prop in props)
+            //{
+            //    if (prop.Name.StartsWith("blah"))
+            //    {
+            //
+            //    }
+            //}
+            MainRibbon.Serialize(wb, true);
         }
 
         #region VSTO generated code
@@ -39,10 +41,10 @@ namespace excel
         /// </summary>
         private void InternalStartup()
         {
-            //this.Application.WorkbookOpen += new Excel.AppEvents_WorkbookOpenEventHandler(Application_WorkbookOpen);
-            this.Application.WorkbookActivate += new Excel.AppEvents_WorkbookActivateEventHandler(Application_WorkbookOpen);
-            this.Application.WorkbookBeforeSave += Application_WorkbookBeforeSave;
+            this.Application.WorkbookActivate += onOpen;
+            this.Application.WorkbookBeforeSave += OnSave;
         }
+
 
         #endregion
     }

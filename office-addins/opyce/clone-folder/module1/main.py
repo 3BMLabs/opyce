@@ -5,11 +5,8 @@
 
 from backend import main
 
-#Launch Excel and Open Workbook
+#connect to Office app
 opyce = main.Opyce()
-
-#Run Macro
-opyce.app.Application.Run("${opyce.workbook_name}.xlsm!Module1.testexcelmacro") 
 
 #Cleanup the com reference. 
 del opyce

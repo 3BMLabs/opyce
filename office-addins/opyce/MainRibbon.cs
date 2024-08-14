@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows.Forms;
-
+using System.Xml.Serialization;
+using Office = Microsoft.Office.Core;
 namespace opyce
 {
 
@@ -19,6 +20,30 @@ namespace opyce
 
         }
 
+        private void MainRibbon_Close(object sender, EventArgs e)
+        {
+            if (Directory.Exists(opyceTempFolder))
+            {
+                while (true)
+                {
+                    Process[] processes = Process.GetProcessesByName("Code");
+                    if (processes.Length == 0) break;
+                    if (MessageBox.Show("please close VS Code. Do you have the opyce folder opened? WE WILL DELETE THE FOLDER WHEN YOU CLICK NO", "Opyce", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        break;
+                }
+                try
+                {
+                    //delete previously created directory
+                    Directory.Delete(opyceTempFolder, true);
+
+                }
+                catch (System.IO.IOException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
         public delegate string replaceFunction(string original);
         public static void SetPlaceHolders(string placeHolders)
         {
@@ -27,7 +52,48 @@ namespace opyce
             File.WriteAllText(opyceIniPath, placeHolders);
         }
 
-        public void serialize<T>()
+        public static void Serialize(dynamic document, bool write)
+        {
+            bool tempFolderExists = Directory.Exists(opyceTempFolder);
+            if (write)
+            {
+                if (tempFolderExists)
+                {
+                    //delete all previous xml parts
+
+
+                    foreach (Office.CustomXMLPart xmlPart in document.CustomXMLParts)
+                    {
+                        if (xmlPart.NamespaceURI == Serializer.OpyceNameSpace)
+                        {
+                            xmlPart.Delete();
+                        }
+                    }
+
+                    //save opyce folder within document structure
+
+                    //loop over folders
+                    string[] paths = Directory.GetFiles(opyceTempFolder, "*", SearchOption.AllDirectories);
+                    foreach (string path in paths)
+                    {
+                        string relativePath = path.Substring(opyceTempFolder.Length + 1);
+                        var customData = new CustomXML { Key = relativePath, Value = File.ReadAllText(path) };
+                        Serializer.AddCustomXmlPart(document, customData, Serializer.OpyceNameSpace);
+                    }
+                }
+            }
+            //we can't just overwrite the temp folder, because we'd merge random projects
+            else if (!tempFolderExists)
+            {
+                CustomXML[] customData = Serializer.GetCustomXmlParts<CustomXML>(document, Serializer.OpyceNameSpace);
+                foreach (CustomXML data in customData)
+                {
+                    string absolutePath = Path.Combine(opyceTempFolder, data.Key);
+                    Directory.CreateDirectory(Path.GetDirectoryName(absolutePath));
+                    File.WriteAllText(absolutePath, data.Value);
+                }
+            }
+        }
 
         public void InstallVSCode()
         {
@@ -67,20 +133,12 @@ namespace opyce
         {
             bool shouldCopy = true;
             //create a folder, containing the code files
-            if (Directory.Exists(opyceTempFolder))
-            {
-                try
-                {
-                    //delete previously created directory
-                    Directory.Delete(opyceTempFolder, true);
-
-                }
-                catch (System.IO.IOException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    shouldCopy = false;
-                }
-            }
+            //if (Directory.Exists(opyceTempFolder))
+            //{
+            //    //check if the ini file contains
+            //    MessageBox.Show("a folder already exists in " + opyceTempFolder);
+            //    return;
+            //}
             if (shouldCopy)
             {
                 FileUtils.CopyDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"clone-folder"), opyceTempFolder, true, false);
@@ -144,5 +202,6 @@ namespace opyce
             //    }
             //}
         }
+
     }
 }

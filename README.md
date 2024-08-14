@@ -24,7 +24,7 @@ we'll have a marketplace containing opyce scripts, to get started easily.
 # sharing data between add-ins
 to share data between addins, we can:
 
-or instead of sharing data, we can write the file already?
+- write an ini file which the main application will read. the ini file will store the current code.
 
 # new outlook requires new add-in
 https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/one-outlook

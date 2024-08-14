@@ -6,6 +6,8 @@ using System.Xml.Linq;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Core;
+using opyce;
+using Microsoft.Office.Interop.PowerPoint;
 
 namespace powerpoint
 {
@@ -26,7 +28,14 @@ namespace powerpoint
         {
             opyce.MainRibbon.SetPlaceHolders($"appname=Powerpoint\ninitialization=");
         }
-
+        void OnOpen(PowerPoint.Presentation pp)
+        {
+            MainRibbon.Serialize(pp, false);
+        }
+        void OnSave(PowerPoint.Presentation pp, ref bool Cancel)
+        {
+            MainRibbon.Serialize(pp, true);
+        }
         #region VSTO generated code
 
         /// <summary>
@@ -36,8 +45,10 @@ namespace powerpoint
         private void InternalStartup()
         {
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
+            this.Application.PresentationBeforeSave += OnSave;
+            this.Application.PresentationOpen += OnOpen;
         }
-        
+
         #endregion
     }
 }

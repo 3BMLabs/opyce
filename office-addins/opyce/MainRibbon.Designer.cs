@@ -75,6 +75,7 @@ namespace opyce
             this.Name = "MainRibbon";
             this.RibbonType = "Microsoft.Excel.Workbook";
             this.Tabs.Add(this.tab1);
+            this.Close += new System.EventHandler(this.MainRibbon_Close);
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.MainRibbon_Load);
             this.tab1.ResumeLayout(false);
             this.tab1.PerformLayout();
