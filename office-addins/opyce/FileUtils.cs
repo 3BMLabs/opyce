@@ -17,12 +17,9 @@ namespace opyce
             DirectoryInfo[] dirs = dir.GetDirectories();
 
             // Create the destination directory
-            if (Directory.Exists(destinationDir))
+            if (!Directory.Exists(destinationDir))
             {
-                if (!overwrite) return;
-            }
-            else
-            {
+                //we won't return when the destinationdir exists, but we'll just merge folders.
                 Directory.CreateDirectory(destinationDir);
             }
 

@@ -17,10 +17,7 @@ namespace powerpoint
         protected override IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
             opyce.MainRibbon.factory = Globals.Factory.GetRibbonFactory();
-            ribbon = new opyce.MainRibbon
-            {
-                RibbonType = "Microsoft.PowerPoint.Presentation"
-            };
+            ribbon = new opyce.MainRibbon();
             //https://learn.microsoft.com/en-us/dotnet/api/microsoft.office.tools.word.documentbase.createribbonextensibilityobject?view=vsto-2022
             return ribbon.GetExtensibility();
         }
@@ -30,11 +27,11 @@ namespace powerpoint
         }
         void OnOpen(PowerPoint.Presentation pp)
         {
-            ribbon.Serialize(pp, false);
+            ribbon.Serialize(false, pp);
         }
         void OnSave(PowerPoint.Presentation pp, ref bool Cancel)
         {
-            ribbon.Serialize(pp, true);
+            ribbon.Serialize(true, pp);
         }
         #region VSTO generated code
 

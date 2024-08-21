@@ -1,0 +1,1 @@
+when modifying the clone-folder, set build action to 'content' and copy to 'always'

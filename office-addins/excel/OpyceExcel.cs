@@ -16,12 +16,12 @@ namespace excel
         }
         void onOpen(Excel.Workbook wb)
         {
-            ribbon.Serialize(wb, false);
+            ribbon.Serialize(false, wb);
             opyce.MainRibbon.SetPlaceHolders($"appname=Excel\ninitialization=self.workbook = self.app.Workbooks(\"{this.Application.ActiveWorkbook.Name}\")");
         }
         void OnSave(Excel.Workbook wb, bool SaveAsUI, ref bool Cancel)
         {
-            ribbon.Serialize(wb, true);
+            ribbon.Serialize(true, wb);
         }
 
         #region VSTO generated code

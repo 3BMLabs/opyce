@@ -210,6 +210,7 @@
   -->
   <ItemGroup>
     <Compile Include="CustomXML.cs" />
+    <Compile Include="DirectorySynchronizer.cs" />
     <Compile Include="FileUtils.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="VSCodeRunner.cs" />
@@ -256,6 +257,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="clone-folder\.vscode\launch.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="clone-folder\backend\buttons.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="opyce_TemporaryKey.pfx" />

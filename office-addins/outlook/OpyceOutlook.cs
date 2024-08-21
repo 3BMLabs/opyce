@@ -9,13 +9,14 @@ namespace outlook
         {
             opyce.MainRibbon.factory = Globals.Factory.GetRibbonFactory();
             ribbon = new opyce.MainRibbon();
-            return ribbon as IRibbonExtensibility; // Assuming Ribbon1 is the class name in the second VSTO add-in
+            return ribbon.GetExtensibility(); // Assuming Ribbon1 is the class name in the second VSTO add-in
         }
 
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            opyce.MainRibbon.SetPlaceHolders($"appname=Outlook");
+            opyce.MainRibbon.SetPlaceHolders("Outlook");
+            ribbon.Serialize(false);
         }
 
         #region VSTO generated code
@@ -27,8 +28,13 @@ namespace outlook
         private void InternalStartup()
         {
             this.Startup += new System.EventHandler(ThisAddIn_Startup);
+            this.Shutdown += OpyceOutlook_Shutdown;
         }
-        
+
+        private void OpyceOutlook_Shutdown(object sender, System.EventArgs e)
+        {
+        }
+
         #endregion
     }
 }
