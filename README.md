@@ -29,3 +29,5 @@ or instead of sharing data, we can write the file already?
 # new outlook requires new add-in
 https://learn.microsoft.com/en-us/office/dev/add-ins/outlook/one-outlook
 
+#for python script execution buttons to office, see
+https://www.youtube.com/watch?v=N7Gqet9FSjA&list=PLHnSLOMOPT11njaNmENJN6p2ro9MTc7t_&index=14
